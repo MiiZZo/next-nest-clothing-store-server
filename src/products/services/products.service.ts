@@ -30,4 +30,8 @@ export class ProductsService {
   async findOne(id: string): Promise<ProductDto | null> {
     return await this.productModel.findById(id);
   }
+  
+  async findAll(): Promise<ProductDto[]> {
+    return await this.productModel.find();
+  }
 }

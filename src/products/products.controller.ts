@@ -7,6 +7,7 @@ import {
   Put,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './services/products.service';
 import { ProductDto, CreateProductDto } from './product.dto';
@@ -25,6 +26,29 @@ export class ProductsController {
   @Get(':id')
   async getProduct(@Param('id') id: string) {
     return await this.productsService.findOne(id);
+  }
+
+  @Get('all')
+  async getProducts(@Query('page') page: string) {
+    const products = await this.productsService.findAll();
+    const productsCount = products.length;
+    const perPage = 12;
+    const pageCount = Math.ceil(productsCount / perPage);
+    let pageNumber = parseInt(page);
+
+    if (isNaN(pageNumber) || pageNumber < 0) {
+      pageNumber = 1;
+    }
+
+    if (pageNumber > pageCount) {
+      pageNumber = pageCount;
+    }
+
+    return {
+      products: products.slice((pageNumber - 1) * perPage, (pageNumber - 1) * perPage + perPage),
+      pageNumber,
+      pageCount
+    }
   }
 
   @UseGuards(JwtAuthGuard, RoleGuard)
