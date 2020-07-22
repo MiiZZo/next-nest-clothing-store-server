@@ -28,7 +28,7 @@ export class ProductsController {
     return await this.productsService.findOne(id);
   }
 
-  @Get('all')
+  @Get()
   async getProducts(@Query('page') page: string) {
     const products = await this.productsService.findAll();
     const productsCount = products.length;
